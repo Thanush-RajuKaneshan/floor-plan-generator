@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Output</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #0984e3; color: #fff;">
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="{{ url_for('home') }}" style="color: #fff; text-decoration: none; font-weight: bold;">Capstone Project</a>
+            <a href="{{ url_for('main_form_page') }}" class="btn" style="background: #fff; color: #0984e3;">Input here</a>
+            <a href="{{ url_for('chatbot_page') }}" class="btn" style="background: #fff; color: #0984e3;">Chatbot</a>
+        </div>
+        <div>
+            {% if session.get('username') %}
+                <a href="{{ url_for('profile_page') }}" class="btn" style="background: #fff; color: #0984e3; margin-right:8px;">{{ session['username'] }}</a>
+                <a href="{{ url_for('logout') }}" class="btn" style="background: #d63031; color: #fff;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login_page') }}" class="btn" style="background: #fff; color: #0984e3;">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="container">
+        <!-- Back button -->
+        <div style="margin-bottom: 16px;">
+            <a href="{{ url_for('profile_page') }}" class="btn" style="background: #636e72; color: #fff;">← Back to Profile</a>
+        </div>
+        
+        <h2>Submission Details</h2>
+    <div class="output-details">
+        <strong>Location:</strong> {{ entry.location }}<br>
+        <strong>Building Type:</strong> {{ entry.building_type }}<br>
+        <strong>Flats per typical floor:</strong>
+        {{ entry.bhk_1 }} × 1BHK,
+        {{ entry.bhk_2 }} × 2BHK,
+        {{ entry.bhk_3 }} × 3BHK,
+        {{ entry.bhk_4 }} × 4BHK<br>
+        <strong>Floors used for FSI fit:</strong> {{ entry.floors }}<br>
+        <strong>Plot area:</strong> {{ entry.plot_size }} {{ entry.area_unit }}<br>
+        <strong>FSI limit used:</strong> {{ entry.fsi }}<br>
+        {% if entry.image_path %}
+        <div style="margin: 16px 0;">
+            <span style="font-weight:600;">Input Image:</span><br>
+            {% set img_path = entry.image_path.replace('\\', '/') %}
+            {% if 'uploads/' in img_path %}
+                {% set img_rel = img_path.split('uploads/')[-1] %}
+            {% else %}
+                {% set img_rel = img_path.split('/')[-1] %}
+            {% endif %}
+            <img src="{{ url_for('serve_uploaded_file', filename=img_rel) }}" alt="Input Image" class="input-image">
+        </div>
+        {% endif %}
+        {% if entry.output_image_path %}
+        <div style="margin: 16px 0;">
+            <span style="font-weight:600;">Output Image:</span><br>
+            {% set out_path = entry.output_image_path.replace('\\', '/') %}
+            {% if 'uploads/' in out_path %}
+                {% set out_rel = out_path.split('uploads/')[-1] %}
+            {% else %}
+                {% set out_rel = out_path.split('/')[-1] %}
+            {% endif %}
+            <img src="{{ url_for('serve_uploaded_file', filename=out_rel) }}" alt="Output Image" class="output-image">
+        </div>
+        {% else %}
+        <p style="color:#b45309; margin:16px 0;">
+            No generated floor-plan image is available for this submission. Check the input and submit it again.
+        </p>
+        {% endif %}
+    </div>
+        {% if variants %}
+        <section style="margin: 24px 0;">
+            <h3>Choose a floor-plan concept</h3>
+            <p>These are the available arrangements that passed strict geometry checks. Some variants may be omitted when their room layout fails facade-access checks. Choose one to make it the active download.</p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+                {% for variant in variants %}
+                {% set variant_path = variant.image_path.replace('\\', '/') %}
+                {% if 'uploads/' in variant_path %}
+                    {% set variant_rel = variant_path.split('uploads/')[-1] %}
+                {% else %}
+                    {% set variant_rel = variant_path.split('/')[-1] %}
+                {% endif %}
+                <article style="border:2px solid {{ '#0984e3' if variant.is_active else '#dfe6e9' }}; border-radius:8px; padding:12px;">
+                    <h4>{{ variant.variant_name }}{% if variant.is_active %} — Selected{% endif %}</h4>
+                    <img src="{{ url_for('serve_uploaded_file', filename=variant_rel) }}"
+                         alt="{{ variant.variant_name }} floor-plan concept"
+                         style="width:100%; height:auto;">
+                    {% if not variant.is_active %}
+                    <form method="post" action="{{ url_for('select_submission_variant', submission_id=entry.id, variant_id=variant.id) }}">
+                        <button class="btn" type="submit">Use this layout</button>
+                    </form>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+        <h3>Generation details</h3>
+        <div class="output-section">
+            <p>The plan is a typical-floor concept. The apartment count is repeated on each entered floor and checked against the entered FSI and a 65% coverage cap.</p>
+            <p>Verify setbacks, FSI, coverage, fire access, accessibility, and structural requirements with the local authority and a licensed architect before relying on this concept.</p>
+        </div>
+        {% if architectural_review %}
+        <section class="output-section" aria-labelledby="concept-checks-title">
+            <h3 id="concept-checks-title">Automated concept checks</h3>
+            <p>These checks describe geometric adjacency only. A passing result is not proof that doors, windows, fire escape, or code requirements are correct.</p>
+            {% for check in architectural_review.checks %}
+            <p>
+                <strong>{{ check.status|title }} — {{ check.id|replace('_', ' ')|title }}:</strong>
+                {{ check.summary }}
+            </p>
+            {% endfor %}
+            <p>Candidate room connections marked in the drawing: {{ architectural_review.door_candidate_count }}. They are not modeled door openings or swings.</p>
+            <button id="local-ai-review" class="btn" type="button"
+                    data-url="{{ url_for('review_submission_with_local_ai', submission_id=entry.id) }}">
+                Ask local AI for suggestions
+            </button>
+            <p>The optional local model receives room types and plan metrics only—not the uploaded boundary image. Its response is advisory, may be wrong, and does not change the generated plan.</p>
+            <div id="local-ai-result" role="status" aria-live="polite"></div>
+        </section>
+        {% endif %}
+    {% if entry.output_image_path %}
+        <a href="{{ url_for('download_output', submission_id=entry.id) }}" class="btn">Download Output Image</a>
+    {% endif %}
+    {% if entry.output_dxf_path %}
+        {% set dxf_path = entry.output_dxf_path.replace('\\', '/') %}
+        {% if 'uploads/' in dxf_path %}
+            {% set dxf_rel = dxf_path.split('uploads/')[-1] %}
+        {% else %}
+            {% set dxf_rel = dxf_path.split('/')[-1] %}
+        {% endif %}
+        <a href="{{ url_for('serve_uploaded_file', filename=dxf_rel) }}" class="btn" download>Download DXF</a>
+    {% endif %}
+    
+    <!-- Additional back button at bottom -->
+    <div style="margin-top: 24px; text-align: center;">
+        <a href="{{ url_for('profile_page') }}" class="btn" style="background: #636e72; color: #fff;">← Back to Profile</a>
+    </div>
+    </div>
+    <script>
+        const aiReviewButton = document.getElementById('local-ai-review');
+        const aiReviewResult = document.getElementById('local-ai-result');
+
+        if (aiReviewButton) {
+            aiReviewButton.addEventListener('click', async () => {
+                aiReviewButton.disabled = true;
+                aiReviewResult.textContent = 'Reviewing the structured plan data locally...';
+                try {
+                    const response = await fetch(aiReviewButton.dataset.url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'}
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Local AI review failed.');
+                    }
+                    aiReviewResult.textContent =
+                        `${result.review.model} — advisory only:\n${result.review.text}`;
+                } catch (error) {
+                    aiReviewResult.textContent = error.message ||
+                        'Local AI review could not be completed.';
+                } finally {
+                    aiReviewButton.disabled = false;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Entry</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+</head>
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #0984e3; color: #fff;">
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="{{ url_for('home') }}" style="color: #fff; text-decoration: none; font-weight: bold;">Capstone Project</a>
+            <a href="{{ url_for('main_form_page') }}" class="btn" style="background: #fff; color: #0984e3;">Input here</a>
+            <a href="{{ url_for('chatbot_page') }}" class="btn" style="background: #fff; color: #0984e3;">Chatbot</a>
+        </div>
+        <div>
+            {% if session.get('username') %}
+                <a href="{{ url_for('profile_page') }}" class="btn" style="background: #fff; color: #0984e3; margin-right:8px;">{{ session['username'] }}</a>
+                <a href="{{ url_for('logout') }}" class="btn" style="background: #d63031; color: #fff;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login_page') }}" class="btn" style="background: #fff; color: #0984e3;">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="form-container">
+        <h2>Edit Building Information</h2>
+        <form method="POST" class="edit-form" id="editForm">
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="area_unit">Area Unit</label>
+                    <select name="area_unit" id="area_unit">
+                        <option value="sqmt" {% if entry.area_unit == 'sqmt' %}selected{% endif %}>Square Meters (sq mt)</option>
+                        <option value="sqft" {% if entry.area_unit == 'sqft' %}selected{% endif %}>Square Feet (sq ft)</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="plot_size">Plot Size</label>
+                    <input type="number" name="plot_size" id="plot_size" value="{{ entry.plot_size or '' }}" placeholder="Enter plot size" required>
+                    <small id="plot_size_unit">{{ 'sq ft' if entry.area_unit == 'sqft' else 'sq mt' }}</small>
+                </div>
+                
+                <div class="form-field">
+                    <label for="location">Location</label>
+                    <input type="text" name="location" id="location" value="{{ entry.location or '' }}" placeholder="Enter location" required>
+                </div>
+                
+                <div class="form-field">
+                    <label for="jurisdiction">Jurisdiction</label>
+                    <input type="text" name="jurisdiction" id="jurisdiction" value="{{ entry.jurisdiction or '' }}" placeholder="Enter jurisdiction" required>
+                </div>
+                
+                <div class="form-field">
+                    <label for="rrr">Document Type</label>
+                    <select name="rrr" id="rrr" required>
+                        <option value="">Select Document</option>
+                        <option value="dcpr" {% if entry.rrr == 'dcpr' %}selected{% endif %}>DCPR</option>
+                        <option value="udcpr" {% if entry.rrr == 'udcpr' %}selected{% endif %}>UDCPR</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="number_of_roads">Number of Roads</label>
+                    <select name="number_of_roads" id="number_of_roads" required>
+                        <option value="">Select Number of Roads</option>
+                        <option value="1" {% if entry.number_of_roads == 1 %}selected{% endif %}>1 Road</option>
+                        <option value="2" {% if entry.number_of_roads == 2 %}selected{% endif %}>2 Roads</option>
+                        <option value="3" {% if entry.number_of_roads == 3 %}selected{% endif %}>3 Roads</option>
+                        <option value="4" {% if entry.number_of_roads == 4 %}selected{% endif %}>4 Roads</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="building_type">Building Type</label>
+                    <select name="building_type" id="building_type" required>
+                        <option value="">Select Building Type</option>
+                        <option value="Residential" {% if entry.building_type == 'Residential' %}selected{% endif %}>Residential</option>
+                        <option value="Industrial" {% if entry.building_type == 'Industrial' %}selected{% endif %}>Industrial</option>
+                        <option value="Commercial" {% if entry.building_type == 'Commercial' %}selected{% endif %}>Commercial</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- BHK Selection Grid -->
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="bhk_1">1 BHK</label>
+                    <small>Size: 430 sq ft per unit</small>
+                    <select name="bhk_1" id="bhk_1">
+                        <option value="0">Select number of 1 BHK units</option>
+                        <option value="1" {% if entry.bhk_1 == 1 %}selected{% endif %}>1</option>
+                        <option value="2" {% if entry.bhk_1 == 2 %}selected{% endif %}>2</option>
+                        <option value="3" {% if entry.bhk_1 == 3 %}selected{% endif %}>3</option>
+                        <option value="4" {% if entry.bhk_1 == 4 %}selected{% endif %}>4</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="bhk_2">2 BHK</label>
+                    <small>Size: 730 sq ft per unit</small>
+                    <select name="bhk_2" id="bhk_2">
+                        <option value="0">Select number of 2 BHK units</option>
+                        <option value="1" {% if entry.bhk_2 == 1 %}selected{% endif %}>1</option>
+                        <option value="2" {% if entry.bhk_2 == 2 %}selected{% endif %}>2</option>
+                        <option value="3" {% if entry.bhk_2 == 3 %}selected{% endif %}>3</option>
+                        <option value="4" {% if entry.bhk_2 == 4 %}selected{% endif %}>4</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="bhk_3">3 BHK</label>
+                    <small>Size: 1100 sq ft per unit</small>
+                    <select name="bhk_3" id="bhk_3">
+                        <option value="0">Select number of 3 BHK units</option>
+                        <option value="1" {% if entry.bhk_3 == 1 %}selected{% endif %}>1</option>
+                        <option value="2" {% if entry.bhk_3 == 2 %}selected{% endif %}>2</option>
+                        <option value="3" {% if entry.bhk_3 == 3 %}selected{% endif %}>3</option>
+                        <option value="4" {% if entry.bhk_3 == 4 %}selected{% endif %}>4</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="bhk_4">4 BHK</label>
+                    <small>Size: 1600 sq ft per unit</small>
+                    <select name="bhk_4" id="bhk_4">
+                        <option value="0">Select number of 4 BHK units</option>
+                        <option value="1" {% if entry.bhk_4 == 1 %}selected{% endif %}>1</option>
+                        <option value="2" {% if entry.bhk_4 == 2 %}selected{% endif %}>2</option>
+                        <option value="3" {% if entry.bhk_4 == 3 %}selected{% endif %}>3</option>
+                        <option value="4" {% if entry.bhk_4 == 4 %}selected{% endif %}>4</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Road Widths Section -->
+            <div id="roadWidthContainer" class="form-field full-width" style="display: block;">
+                <div id="singleRoadWidthContainer" style="display: none;">
+                    <label for="road_width">Road Width</label>
+                    <select name="road_width" id="singleRoadWidth" {% if entry.number_of_roads == 1 %}required{% endif %}>
+                        <option value="">Select Road Width</option>
+                        <option value="4" {% if entry.road_width == 4 %}selected{% endif %}>4 m</option>
+                        <option value="6" {% if entry.road_width == 6 %}selected{% endif %}>6 m</option>
+                        <option value="9" {% if entry.road_width == 9 %}selected{% endif %}>9 m</option>
+                        <option value="12.20" {% if entry.road_width == 12.20 %}selected{% endif %}>12.20 m</option>
+                        <option value="13.20" {% if entry.road_width == 13.20 %}selected{% endif %}>13.20 m</option>
+                        <option value="18.30" {% if entry.road_width == 18.30 %}selected{% endif %}>18.30 m</option>
+                        <option value="27.30" {% if entry.road_width == 27.30 %}selected{% endif %}>27.30 m</option>
+                        <option value="37.30" {% if entry.road_width == 37.30 %}selected{% endif %}>37.30 m</option>
+                    </select>
+                </div>
+                
+                <div id="multiRoadWidths" style="display: none;">
+                    <h4 style="margin: 16px 0 12px 0; color: #2d3436;">Road Widths</h4>
+                    <div class="road-width-grid">
+                        <div class="road-width-item">
+                            <label for="roadWidth1">Road 1 Width</label>
+                            <select name="road_width_1" id="roadWidth1" {% if entry.number_of_roads and entry.number_of_roads >= 2 %}required{% endif %}>
+                                <option value="">Select Road 1 Width</option>
+                                <option value="4" {% if entry.road_width_1 == 4 %}selected{% endif %}>4 m</option>
+                                <option value="6" {% if entry.road_width_1 == 6 %}selected{% endif %}>6 m</option>
+                                <option value="9" {% if entry.road_width_1 == 9 %}selected{% endif %}>9 m</option>
+                                <option value="12.20" {% if entry.road_width_1 == 12.20 %}selected{% endif %}>12.20 m</option>
+                                <option value="13.20" {% if entry.road_width_1 == 13.20 %}selected{% endif %}>13.20 m</option>
+                                <option value="18.30" {% if entry.road_width_1 == 18.30 %}selected{% endif %}>18.30 m</option>
+                                <option value="27.30" {% if entry.road_width_1 == 27.30 %}selected{% endif %}>27.30 m</option>
+                                <option value="37.30" {% if entry.road_width_1 == 37.30 %}selected{% endif %}>37.30 m</option>
+                            </select>
+                        </div>
+                        
+                        <div class="road-width-item">
+                            <label for="roadWidth2">Road 2 Width</label>
+                            <select name="road_width_2" id="roadWidth2" {% if entry.number_of_roads and entry.number_of_roads >= 2 %}required{% endif %}>
+                                <option value="">Select Road 2 Width</option>
+                                <option value="4" {% if entry.road_width_2 == 4 %}selected{% endif %}>4 m</option>
+                                <option value="6" {% if entry.road_width_2 == 6 %}selected{% endif %}>6 m</option>
+                                <option value="9" {% if entry.road_width_2 == 9 %}selected{% endif %}>9 m</option>
+                                <option value="12.20" {% if entry.road_width_2 == 12.20 %}selected{% endif %}>12.20 m</option>
+                                <option value="13.20" {% if entry.road_width_2 == 13.20 %}selected{% endif %}>13.20 m</option>
+                                <option value="18.30" {% if entry.road_width_2 == 18.30 %}selected{% endif %}>18.30 m</option>
+                                <option value="27.30" {% if entry.road_width_2 == 27.30 %}selected{% endif %}>27.30 m</option>
+                                <option value="37.30" {% if entry.road_width_2 == 37.30 %}selected{% endif %}>37.30 m</option>
+                            </select>
+                        </div>
+                        
+                        <div class="road-width-item" id="road3WidthContainer" {% if not entry.number_of_roads or entry.number_of_roads < 3 %}style="display: none;"{% endif %}>
+                            <label for="roadWidth3">Road 3 Width</label>
+                            <select name="road_width_3" id="roadWidth3" {% if entry.number_of_roads and entry.number_of_roads >= 3 %}required{% endif %}>
+                                <option value="">Select Road 3 Width</option>
+                                <option value="4" {% if entry.road_width_3 == 4 %}selected{% endif %}>4 m</option>
+                                <option value="6" {% if entry.road_width_3 == 6 %}selected{% endif %}>6 m</option>
+                                <option value="9" {% if entry.road_width_3 == 9 %}selected{% endif %}>9 m</option>
+                                <option value="12.20" {% if entry.road_width_3 == 12.20 %}selected{% endif %}>12.20 m</option>
+                                <option value="13.20" {% if entry.road_width_3 == 13.20 %}selected{% endif %}>13.20 m</option>
+                                <option value="18.30" {% if entry.road_width_3 == 18.30 %}selected{% endif %}>18.30 m</option>
+                                <option value="27.30" {% if entry.road_width_3 == 27.30 %}selected{% endif %}>27.30 m</option>
+                                <option value="37.30" {% if entry.road_width_3 == 37.30 %}selected{% endif %}>37.30 m</option>
+                            </select>
+                        </div>
+                        
+                        <div class="road-width-item" id="road4WidthContainer" {% if not entry.number_of_roads or entry.number_of_roads < 4 %}style="display: none;"{% endif %}>
+                            <label for="roadWidth4">Road 4 Width</label>
+                            <select name="road_width_4" id="roadWidth4" {% if entry.number_of_roads and entry.number_of_roads >= 4 %}required{% endif %}>
+                                <option value="">Select Road 4 Width</option>
+                                <option value="4" {% if entry.road_width_4 == 4 %}selected{% endif %}>4 m</option>
+                                <option value="6" {% if entry.road_width_4 == 6 %}selected{% endif %}>6 m</option>
+                                <option value="9" {% if entry.road_width_4 == 9 %}selected{% endif %}>9 m</option>
+                                <option value="12.20" {% if entry.road_width_4 == 12.20 %}selected{% endif %}>12.20 m</option>
+                                <option value="13.20" {% if entry.road_width_4 == 13.20 %}selected{% endif %}>13.20 m</option>
+                                <option value="18.30" {% if entry.road_width_4 == 18.30 %}selected{% endif %}>18.30 m</option>
+                                <option value="27.30" {% if entry.road_width_4 == 27.30 %}selected{% endif %}>27.30 m</option>
+                                <option value="37.30" {% if entry.road_width_4 == 37.30 %}selected{% endif %}>37.30 m</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="aai_height">Height assigned by AAI (meters)</label>
+                <input type="number" name="aai_height" id="aai_height" step="0.01" value="{{ entry.aai_height or '' }}" placeholder="Enter AAI height in meters" required>
+            </div>
+            
+            <div class="form-field">
+                <label for="per_floor_height">Height per Floor (meters)</label>
+                <input type="number" name="per_floor_height" id="per_floor_height" step="0.1" value="{{ entry.per_floor_height or 3.0 }}" placeholder="Enter height per floor" required>
+                <small>Standard floor height is 3.0 meters</small>
+            </div>
+            
+            <!-- Enhanced FSI and BUA Calculation Section -->
+            <div id="calculationSection" class="calculation-section" style="display: block;">
+                <h3>Building Analysis & Calculations</h3>
+                <div class="calculation-grid">
+                    <div class="calculation-item">
+                        <strong>Zone Type:</strong> <span id="zoneTypeValue">{{ entry.zone_type or 'Unknown' }}</span>
+                    </div>
+                    <div class="calculation-item">
+                        <strong>Basic FSI:</strong> <span id="basicFsiValue">{{ "%.2f"|format(entry.fsi or 0) }}</span>
+                    </div>
+                    <div class="calculation-item">
+                        <strong>Max FSI:</strong> <span id="maxFsiValue">{{ "%.2f"|format(entry.max_fsi or 0) }}</span>
+                    </div>
+                    <div class="calculation-item">
+                        <strong>Basic BUA:</strong> <span id="basicBuaValue">{{ "%.2f"|format(entry.bua or 0) }} {{ entry.area_unit or 'sq mt' }}</span>
+                    </div>
+                    <div class="calculation-item">
+                        <strong>Max BUA:</strong> <span id="maxBuaValue">{{ "%.2f"|format(entry.max_bua or 0) }} {{ entry.area_unit or 'sq mt' }}</span>
+                    </div>
+                    <div class="calculation-item">
+                        <strong>Total Floors:</strong> <span id="floorsValue">{{ entry.floors or 0 }}</span>
+                    </div>
+                    <div class="calculation-item">
+                        <strong>Area per Floor:</strong> <span id="areaPerFloorValue">{{ "%.2f"|format(entry.fsi_per_floor or 0) }} sq ft</span>
+                    </div>
+                    <div class="calculation-item">
+                        <strong>Remaining Area:</strong> <span id="remainingAreaValue">{{ "%.2f"|format(entry.area_left or 0) }} sq ft</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 24px;">
+                <button type="submit" class="btn">Save Changes</button>
+                <a href="{{ url_for('profile_page') }}" class="btn" style="background: #636e72; text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Loading Screen -->
+    <div class="loading" id="loadingScreen">
+        <div class="spinner"></div>
+        <span class="loading-text">Updating floor plan...</span>
+    </div>
+    
+    <!-- Popup for messages -->
+    <div id="popup" style="display: none; position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 15px 20px; border-radius: 5px; z-index: 1000; font-weight: bold;"></div>
+
+    <script>
+        // Get form elements
+        const form = document.getElementById('editForm');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const plotSizeInput = document.getElementById('plot_size');
+        const areaUnitSelect = document.getElementById('area_unit');
+        const aaiHeightInput = document.getElementById('aai_height');
+        const perFloorHeightInput = document.getElementById('per_floor_height');
+        const numberOfRoadsSelect = document.getElementById('number_of_roads');
+        const buildingTypeSelect = document.getElementById('building_type');
+        const locationInput = document.getElementById('location');
+        const jurisdictionInput = document.getElementById('jurisdiction');
+        
+        // BHK selectors
+        const bhk1Select = document.getElementById('bhk_1');
+        const bhk2Select = document.getElementById('bhk_2');
+        const bhk3Select = document.getElementById('bhk_3');
+        const bhk4Select = document.getElementById('bhk_4');
+        
+        // Road width selectors
+        const singleRoadWidth = document.getElementById('singleRoadWidth');
+        const roadWidth1 = document.getElementById('roadWidth1');
+        const roadWidth2 = document.getElementById('roadWidth2');
+        const roadWidth3 = document.getElementById('roadWidth3');
+        const roadWidth4 = document.getElementById('roadWidth4');
+
+        // Store original values for change detection
+        const originalValues = {
+            plot_size: parseFloat(plotSizeInput.value) || 0,
+            bhk_1: parseInt(bhk1Select.value) || 0,
+            bhk_2: parseInt(bhk2Select.value) || 0,
+            bhk_3: parseInt(bhk3Select.value) || 0,
+            bhk_4: parseInt(bhk4Select.value) || 0,
+            building_type: buildingTypeSelect.value || '',
+            number_of_roads: parseInt(numberOfRoadsSelect.value) || 0,
+            aai_height: parseFloat(aaiHeightInput.value) || 0,
+            per_floor_height: parseFloat(perFloorHeightInput.value) || 3.0
+        };
+
+        // Function to check if significant changes were made
+        function hasSignificantChanges() {
+            const current = {
+                plot_size: parseFloat(plotSizeInput.value) || 0,
+                bhk_1: parseInt(bhk1Select.value) || 0,
+                bhk_2: parseInt(bhk2Select.value) || 0,
+                bhk_3: parseInt(bhk3Select.value) || 0,
+                bhk_4: parseInt(bhk4Select.value) || 0,
+                building_type: buildingTypeSelect.value || '',
+                number_of_roads: parseInt(numberOfRoadsSelect.value) || 0,
+                aai_height: parseFloat(aaiHeightInput.value) || 0,
+                per_floor_height: parseFloat(perFloorHeightInput.value) || 3.0
+            };
+
+            return Object.keys(originalValues).some(key => originalValues[key] !== current[key]);
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', function(e) {
+            const significantChanges = hasSignificantChanges();
+            
+            if (significantChanges) {
+                // Show loading screen for floor plan regeneration
+                loadingScreen.classList.add('active');
+                showPopup('Updating floor plan based on changes...', '#f39c12');
+            } else {
+                showPopup('Saving changes...', '#3498db');
+            }
+        });
+
+        // Popup message function
+        function showPopup(msg, color = '#27ae60') {
+            const popup = document.getElementById('popup');
+            popup.textContent = msg;
+            popup.style.background = color;
+            popup.style.display = 'block';
+            setTimeout(() => { popup.style.display = 'none'; }, 3000);
+        }
+
+        // Add event listeners for real-time calculation updates
+        [plotSizeInput, areaUnitSelect, aaiHeightInput, perFloorHeightInput, 
+         buildingTypeSelect, locationInput, jurisdictionInput,
+         bhk1Select, bhk2Select, bhk3Select, bhk4Select].forEach(element => {
+            if (element) {
+                element.addEventListener('input', updateCalculationDisplay);
+                element.addEventListener('change', updateCalculationDisplay);
+            }
+        });
+
+        // Road width change listeners
+        [singleRoadWidth, roadWidth1, roadWidth2, roadWidth3, roadWidth4].forEach(element => {
+            if (element) {
+                element.addEventListener('change', updateCalculationDisplay);
+            }
+        });
+
+        // Handle road number selection change (same as main form)
+        numberOfRoadsSelect.addEventListener('change', function() {
+            const numRoads = parseInt(this.value);
+            const singleRoadWidthContainer = document.getElementById('singleRoadWidthContainer');
+            const multiRoadWidths = document.getElementById('multiRoadWidths');
+            const road3Container = document.getElementById('road3WidthContainer');
+            const road4Container = document.getElementById('road4WidthContainer');
+            
+            if (isNaN(numRoads) || numRoads < 1) {
+                if (singleRoadWidthContainer) singleRoadWidthContainer.style.display = 'none';
+                if (multiRoadWidths) multiRoadWidths.style.display = 'none';
+            } else if (numRoads === 1) {
+                if (singleRoadWidthContainer) singleRoadWidthContainer.style.display = 'block';
+                if (multiRoadWidths) multiRoadWidths.style.display = 'none';
+            } else {
+                if (singleRoadWidthContainer) singleRoadWidthContainer.style.display = 'none';
+                if (multiRoadWidths) multiRoadWidths.style.display = 'block';
+                
+                if (road3Container) road3Container.style.display = numRoads >= 3 ? 'block' : 'none';
+                if (road4Container) road4Container.style.display = numRoads >= 4 ? 'block' : 'none';
+            }
+            
+            updateCalculationDisplay();
+        });
+
+        // Calculation functions (simplified version of main form)
+        function updateCalculationDisplay() {
+            const calculations = calculateEnhancedBUA();
+            const areaUnit = areaUnitSelect.value;
+            
+            // Update calculation displays
+            document.getElementById('zoneTypeValue').textContent = calculations.zone_type.replace('_', ' ').toUpperCase();
+            document.getElementById('basicFsiValue').textContent = calculations.fsi.toFixed(2);
+            document.getElementById('maxFsiValue').textContent = calculations.max_fsi.toFixed(2);
+            
+            const unitText = areaUnit === 'sqft' ? 'sq ft' : 'sq mt';
+            document.getElementById('basicBuaValue').textContent = calculations.bua.toFixed(2) + ' ' + unitText;
+            document.getElementById('maxBuaValue').textContent = calculations.max_bua.toFixed(2) + ' ' + unitText;
+            
+            document.getElementById('floorsValue').textContent = calculations.floors;
+            document.getElementById('areaPerFloorValue').textContent = calculations.fsi_per_floor.toFixed(2) + ' sq ft';
+            
+            const remainingElement = document.getElementById('remainingAreaValue');
+            remainingElement.textContent = calculations.area_left.toFixed(2) + ' sq ft';
+            remainingElement.style.color = calculations.area_left >= 0 ? '#27ae60' : '#e74c3c';
+        }
+
+        // Simplified calculation function
+        function calculateEnhancedBUA() {
+            const plotSize = parseFloat(plotSizeInput.value) || 0;
+            const areaUnit = areaUnitSelect.value;
+            const numRoads = parseInt(numberOfRoadsSelect.value) || 0;
+            const aaiHeight = parseFloat(aaiHeightInput.value) || 0;
+            const perFloorHeight = parseFloat(perFloorHeightInput.value) || 3.0;
+            const location = locationInput.value || '';
+            const jurisdiction = jurisdictionInput.value || '';
+
+            let roadWidths = [];
+            if (numRoads === 1 && singleRoadWidth) {
+                const singleWidth = parseFloat(singleRoadWidth.value);
+                if (!isNaN(singleWidth)) roadWidths.push(singleWidth);
+            } else {
+                [roadWidth1, roadWidth2, roadWidth3, roadWidth4].forEach((element, index) => {
+                    if (element && index < numRoads) {
+                        const width = parseFloat(element.value);
+                        if (!isNaN(width)) roadWidths.push(width);
+                    }
+                });
+            }
+
+            if (roadWidths.length === 0 || plotSize <= 0) {
+                return {
+                    fsi: 0, max_fsi: 0, bua: 0, max_bua: 0, floors: 0,
+                    fsi_per_floor: 0, area_left: 0, zone_type: 'unknown'
+                };
+            }
+
+            // Convert plot size if needed
+            let plotSizeSqmt = plotSize;
+            if (areaUnit === 'sqft') {
+                plotSizeSqmt = plotSize / 10.764;
+            }
+            
+            // Simple FSI calculation
+            const maxRoadWidth = Math.max(...roadWidths);
+            let basicFSI = 1.0;
+            if (maxRoadWidth >= 30) basicFSI = 3.0;
+            else if (maxRoadWidth >= 27.3) basicFSI = 2.5;
+            else if (maxRoadWidth >= 18.3) basicFSI = 2.0;
+            else if (maxRoadWidth >= 13.2) basicFSI = 1.8;
+            else if (maxRoadWidth >= 12.2) basicFSI = 1.5;
+            else if (maxRoadWidth >= 9) basicFSI = 1.3;
+            else if (maxRoadWidth >= 6) basicFSI = 1.1;
+            
+            const maxFSI = basicFSI * 1.5;
+            
+            let basicBUA = plotSizeSqmt * basicFSI;
+            let maxBUA = plotSizeSqmt * maxFSI;
+            
+            // Convert back to original unit if needed
+            if (areaUnit === 'sqft') {
+                basicBUA *= 10.764;
+                maxBUA *= 10.764;
+            }
+            
+            const floors = perFloorHeight > 0 ? Math.floor(aaiHeight / perFloorHeight) : 0;
+            
+            let areaPerFloorSqft = 0;
+            if (floors > 0) {
+                const buaInSqft = areaUnit === 'sqft' ? maxBUA : (maxBUA * 10.764);
+                areaPerFloorSqft = buaInSqft / floors;
+            }
+            
+            // Calculate BHK areas and remaining area
+            const bhk1Count = parseInt(bhk1Select.value) || 0;
+            const bhk2Count = parseInt(bhk2Select.value) || 0;
+            const bhk3Count = parseInt(bhk3Select.value) || 0;
+            const bhk4Count = parseInt(bhk4Select.value) || 0;
+            
+            const totalBhkArea = (bhk1Count * 430) + (bhk2Count * 730) + (bhk3Count * 1100) + (bhk4Count * 1600);
+            const remainingArea = areaPerFloorSqft - totalBhkArea;
+
+            return {
+                fsi: basicFSI,
+                max_fsi: maxFSI,
+                bua: basicBUA,
+                max_bua: maxBUA,
+                floors: floors,
+                fsi_per_floor: areaPerFloorSqft,
+                area_left: remainingArea,
+                zone_type: 'calculated'
+            };
+        }
+
+        // Initialize calculations on page load
+        updateCalculationDisplay();
+        
+        // Initialize road width display based on current number of roads
+        const initialNumRoads = parseInt(numberOfRoadsSelect.value) || 0;
+        if (initialNumRoads > 0) {
+            // Trigger the road display logic
+            const event = new Event('change');
+            numberOfRoadsSelect.dispatchEvent(event);
+        }
+    </script>
+    
+    <!-- Success/Error message display for regeneration -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
+                    window.addEventListener('load', function() {
+                        var color = '{{ category }}' === 'success' ? '#27ae60' : '#e74c3c';
+                        showPopup('{{ message }}', color);
+                    });
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

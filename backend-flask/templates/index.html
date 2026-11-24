@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capstone Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #0984e3; color: #fff;">
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="{{ url_for('home') }}" style="color: #fff; text-decoration: none; font-weight: bold;">Capstone Project</a>
+            <a href="{{ url_for('main_form_page') }}" class="btn" style="background: #fff; color: #0984e3;">Input here</a>
+            <a href="{{ url_for('chatbot_page') }}" class="btn" style="background: #fff; color: #0984e3;">Chatbot</a>
+        </div>
+        <div>
+            {% if session.get('username') %}
+                <a href="{{ url_for('profile_page') }}" class="btn" style="background: #fff; color: #0984e3; margin-right:8px;">{{ session['username'] }}</a>
+                <a href="{{ url_for('logout') }}" class="btn" style="background: #d63031; color: #fff;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login_page') }}" class="btn" style="background: #fff; color: #0984e3;">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="container">
+        {% if session.get('username') %}
+            <h1>Hello {{ session['username'] }}</h1>
+        {% else %}
+            <h1>Hello</h1>
+        {% endif %}
+    </div>
+</body>
+
+</html>

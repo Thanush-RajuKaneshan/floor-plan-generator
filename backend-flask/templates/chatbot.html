@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #0984e3; color: #fff;">
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="{{ url_for('home') }}" style="color: #fff; text-decoration: none; font-weight: bold;">Capstone Project</a>
+            <a href="{{ url_for('main_form_page') }}" class="btn" style="background: #fff; color: #0984e3;">Input here</a>
+            <a href="{{ url_for('chatbot_page') }}" class="btn" style="background: #fff; color: #0984e3;">Chatbot</a>
+        </div>
+        <div>
+            {% if session.get('username') %}
+                <a href="{{ url_for('profile_page') }}" class="btn" style="background: #fff; color: #0984e3; margin-right:8px;">{{ session['username'] }}</a>
+                <a href="{{ url_for('logout') }}" class="btn" style="background: #d63031; color: #fff;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login_page') }}" class="btn" style="background: #fff; color: #0984e3;">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="container">
+        <h2>Chatbot</h2>
+        <p>Ask about generated floor-plan concepts, output metrics, or DCPR terms. Answers are rule-based and do not certify regulatory compliance.</p>
+        <div id="chat-window" aria-live="polite" style="background:#f5f6fa; border-radius:8px; min-height:200px; padding:16px; margin-bottom:16px; overflow-y:auto; max-height:300px;"></div>
+        {% if session.get('username') %}
+        <form id="chat-form" style="display:flex; gap:8px;">
+            <input type="text" id="chat-input" maxlength="500" placeholder="Ask about FSI, BUA, setbacks, or the generated plan..." style="flex:1; padding:8px; border-radius:4px; border:1px solid #ccc;">
+            <button id="chat-send" type="submit" class="btn">Send</button>
+        </form>
+        {% else %}
+        <div style="color: #d63031; font-weight: bold; margin: 24px 0;">You must be logged in to use the chatbot.</div>
+        {% endif %}
+    </div>
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const messages = [{
+            sender: 'bot',
+            text: 'Ask me about your latest generated plan or the Mumbai DCPR-2034 rules. I answer from the regulation text and your plan data, and I will say when they do not cover a question.'
+        }];
+
+        function addMessage(sender, text) {
+            const row = document.createElement('div');
+            row.style.textAlign = sender === 'user' ? 'right' : 'left';
+            const bubble = document.createElement('span');
+            bubble.style.cssText = sender === 'user'
+                ? 'background:#0984e3;color:#fff;'
+                : 'background:#dfe6e9;color:#2d3436;';
+            bubble.style.padding = '6px 12px';
+            bubble.style.borderRadius = '16px';
+            bubble.style.display = 'inline-block';
+            bubble.style.margin = '4px 0';
+            bubble.style.whiteSpace = 'pre-wrap';
+            bubble.textContent = text;
+            row.appendChild(bubble);
+            chatWindow.appendChild(row);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function renderMessages() {
+            chatWindow.replaceChildren();
+            messages.forEach(message => addMessage(message.sender, message.text));
+        }
+
+        renderMessages();
+        if (chatForm) chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            chatInput.value = '';
+            messages.push({sender: 'user', text: msg});
+            renderMessages();
+            chatInput.disabled = true;
+            chatSend.disabled = true;
+            try {
+                const response = await fetch('{{ url_for("chatbot_api") }}', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg, history: messages.slice(-7, -1)})
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'The chatbot could not answer right now.');
+                const sources = result.sources && result.sources.length
+                    ? `\n\nSources: DCPR-2034 p. ${result.sources.join(', ')}` : '';
+                messages.push({sender: 'bot', text: result.answer + sources});
+            } catch (error) {
+                messages.push({
+                    sender: 'bot',
+                    text: error.message || 'The chatbot could not connect. Please try again.'
+                });
+            } finally {
+                chatInput.disabled = false;
+                chatSend.disabled = false;
+                chatInput.focus();
+                renderMessages();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #0984e3; color: #fff;">
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="{{ url_for('home') }}" style="color: #fff; text-decoration: none; font-weight: bold;">Capstone Project</a>
+            <a href="{{ url_for('main_form_page') }}" class="btn" style="background: #fff; color: #0984e3;">Input here</a>
+            <a href="{{ url_for('chatbot_page') }}" class="btn" style="background: #fff; color: #0984e3;">Chatbot</a>
+        </div>
+        <div>
+            <a href="{{ url_for('profile_page') }}" class="btn" style="background: #fff; color: #0984e3; margin-right:8px;">{{ session['username'] }}</a>
+            <a href="{{ url_for('logout') }}" class="btn" style="background: #d63031; color: #fff;">Logout</a>
+        </div>
+    </header>
+    <div class="container">
+        <h1><p>Welcome, {{ session['username'] }}!</p></h1>
+        
+        <h2>Your Submissions</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;">
+            {% for entry in user_data %}
+                <div style="background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 16px; min-width: 220px;">
+                    <strong>{{ entry.location }}:</strong><br>
+                    <strong>Building Type:</strong> {{ entry.building_type }}<br>
+                    <strong>BHK:</strong> {{ entry.bhk }}<br>
+                    <a href="{{ url_for('output_submission_page', submission_id=entry.id) }}" class="btn">View submission</a>
+                    {% if entry.image_path %}
+                    {% set img_path = entry.image_path.replace('\\', '/') %}
+                    {% if 'uploads/' in img_path %}
+                        {% set img_rel = img_path.split('uploads/')[-1] %}
+                    {% else %}
+                        {% set img_rel = img_path.split('/')[-1] %}
+                    {% endif %}
+                    <img src="{{ url_for('serve_uploaded_file', filename=img_rel) }}" alt="Image" style="max-width:100px; max-height:100px; margin-top:8px;">
+                    {% endif %}
+                    <div style="margin-top:12px; display:flex; gap:8px;">
+                        <a href="{{ url_for('edit_entry_page', location=entry.location) }}" class="btn" style="background:#74b9ff; color:#2d3436;">Edit</a>
+                        <form method="POST" action="{{ url_for('delete_entry', location=entry.location) }}" style="display:inline;">
+                            <button type="submit" class="btn" style="background:#d63031; color:#fff;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+            <p>No submissions yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>

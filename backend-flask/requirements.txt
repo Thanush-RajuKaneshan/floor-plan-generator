@@ -1,0 +1,18 @@
+# Backend Flask Requirements
+# Core Flask dependencies
+Flask>=2.0.0
+Flask-CORS>=3.0.0
+Werkzeug>=2.0.0
+
+# Dependencies for BoundaryNaturalGenerator integration
+opencv-python>=4.5.0
+numpy>=1.21.0
+matplotlib>=3.5.0
+shapely>=1.8.0
+ezdxf>=0.17.0
+
+# Chatbot + AI plan review use a local Ollama server (no Python package needed):
+#   install Ollama, then: ollama pull qwen2.5:7b && ollama serve
+#   optional env: OLLAMA_URL (default http://localhost:11434), OLLAMA_MODEL
+
+# Note: sqlite3 is included in Python standard library

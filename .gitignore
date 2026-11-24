@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Runtime data created by the app (user accounts, uploads, generated plans)
+backend-flask/users.db
+backend-flask/uploads/

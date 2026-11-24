@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Info Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+</head>
+
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #0984e3; color: #fff;">
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="{{ url_for('home') }}" style="color: #fff; text-decoration: none; font-weight: bold;">Capstone Project</a>
+            <a href="{{ url_for('main_form_page') }}" class="btn" style="background: #fff; color: #0984e3;">Input here</a>
+            <a href="{{ url_for('chatbot_page') }}" class="btn" style="background: #fff; color: #0984e3;">Chatbot</a>
+        </div>
+        <div>
+            {% if session.get('username') %}
+                <a href="{{ url_for('profile_page') }}" class="btn" style="background: #fff; color: #0984e3; margin-right:8px;">{{ session['username'] }}</a>
+                <a href="{{ url_for('logout') }}" class="btn" style="background: #d63031; color: #fff;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login_page') }}" class="btn" style="background: #fff; color: #0984e3;">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="form-container">
+        <h2>Building Information</h2>
+    {% if session.get('username') %}
+    <form id="buildingForm" enctype="multipart/form-data">
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="area_unit">Area Unit</label>
+                <select name="area_unit" id="area_unit">
+                    <option value="sqmt">Square Meters (sq mt)</option>
+                    <option value="sqft">Square Feet (sq ft)</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="plot_size">Plot Size</label>
+                <input type="number" name="plot_size" id="plot_size" placeholder="Enter plot size" required>
+                <small id="plot_size_unit">sq mt</small>
+            </div>
+            
+            <div class="form-field">
+                <label for="location">Location</label>
+                <select name="location" id="location" required>
+                    <option value="">Select Location</option>
+                    <optgroup label="Island City (Basic FSI: 1.33)">
+                        <option value="Fort">Fort</option>
+                        <option value="Churchgate">Churchgate</option>
+                        <option value="Marine Lines">Marine Lines</option>
+                        <option value="Colaba">Colaba</option>
+                        <option value="Nariman Point">Nariman Point</option>
+                        <option value="Ballard Estate">Ballard Estate</option>
+                        <option value="Marine Drive">Marine Drive</option>
+                        <option value="Cuffe Parade">Cuffe Parade</option>
+                        <option value="Lower Parel">Lower Parel</option>
+                        <option value="Worli">Worli</option>
+                    </optgroup>
+                    <optgroup label="Extended Suburbs (Basic FSI: 1.0)">
+                        <option value="Andheri West">Andheri West</option>
+                        <option value="Andheri East">Andheri East</option>
+                        <option value="Jogeshwari West">Jogeshwari West</option>
+                        <option value="Jogeshwari East">Jogeshwari East</option>
+                        <option value="Goregaon West">Goregaon West</option>
+                        <option value="Goregaon East">Goregaon East</option>
+                        <option value="Malad West">Malad West</option>
+                        <option value="Malad East">Malad East</option>
+                        <option value="Kandivali West">Kandivali West</option>
+                        <option value="Kandivali East">Kandivali East</option>
+                        <option value="Borivali West">Borivali West</option>
+                        <option value="Borivali East">Borivali East</option>
+                        <option value="Dahisar">Dahisar</option>
+                        <option value="Virar">Virar</option>
+                        <option value="Vasai">Vasai</option>
+                        <option value="Nalasopara">Nalasopara</option>
+                        <option value="Mira Road">Mira Road</option>
+                        <option value="Bhayander">Bhayander</option>
+                    </optgroup>
+                    <optgroup label="Suburbs (Basic FSI: 1.0)">
+                        <option value="Bandra West">Bandra West</option>
+                        <option value="Bandra East">Bandra East</option>
+                        <option value="Khar West">Khar West</option>
+                        <option value="Khar East">Khar East</option>
+                        <option value="Santacruz West">Santacruz West</option>
+                        <option value="Santacruz East">Santacruz East</option>
+                        <option value="Vile Parle West">Vile Parle West</option>
+                        <option value="Vile Parle East">Vile Parle East</option>
+                        <option value="Juhu">Juhu</option>
+                        <option value="Versova">Versova</option>
+                        <option value="Powai">Powai</option>
+                        <option value="Chembur">Chembur</option>
+                        <option value="Ghatkopar West">Ghatkopar West</option>
+                        <option value="Ghatkopar East">Ghatkopar East</option>
+                        <option value="Vikhroli">Vikhroli</option>
+                        <option value="Mulund">Mulund</option>
+                        <option value="Bhandup">Bhandup</option>
+                        <option value="Kanjurmarg">Kanjurmarg</option>
+                        <option value="Kurla">Kurla</option>
+                        <option value="Sion">Sion</option>
+                        <option value="Matunga">Matunga</option>
+                        <option value="Dadar">Dadar</option>
+                    </optgroup>
+                    <optgroup label="Thane Region">
+                        <option value="Thane West">Thane West</option>
+                        <option value="Thane East">Thane East</option>
+                        <option value="Kalyan">Kalyan</option>
+                        <option value="Dombivli">Dombivli</option>
+                        <option value="Airoli">Airoli</option>
+                        <option value="Ghansoli">Ghansoli</option>
+                        <option value="Vashi">Vashi</option>
+                        <option value="Nerul">Nerul</option>
+                    </optgroup>
+                    <optgroup label="Other Areas">
+                        <option value="Other">Other (Please specify in comments)</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div class="form-field" id="customLocationField" style="display: none;">
+                <label for="custom_location">Enter Your Location</label>
+                <input type="text" name="custom_location" id="custom_location" placeholder="Enter your specific location">
+                <div id="locationValidationMsg" class="validation-message" style="display: none; color: #e74c3c; font-size: 0.9em; margin-top: 5px; font-weight: bold;"></div>
+            </div>
+            
+            <div class="form-field">
+                <label for="jurisdiction">Jurisdiction</label>
+                <select name="jurisdiction" id="jurisdiction" required>
+                    <option value="">Select Jurisdiction</option>
+                    <option value="MCGM">MCGM (Municipal Corporation of Greater Mumbai)</option>
+                    <option value="MMRDA">MMRDA (Mumbai Metropolitan Region Development Authority)</option>
+                    <option value="CIDCO">CIDCO (City and Industrial Development Corporation)</option>
+                    <option value="TMC">TMC (Thane Municipal Corporation)</option>
+                    <option value="KDMC">KDMC (Kalyan Dombivli Municipal Corporation)</option>
+                    <option value="MBMC">MBMC (Mira Bhayandar Municipal Corporation)</option>
+                    <option value="VCMC">VCMC (Vasai Virar City Municipal Corporation)</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="rrr">Document Type</label>
+                <select name="rrr" id="rrr" required>
+                    <option value="">Select Document</option>
+                    <option value="dcpr">DCPR</option>
+                    <option value="udcpr">UDCPR</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="number_of_roads">Number of Roads</label>
+                <select name="number_of_roads" id="number_of_roads" required>
+                    <option value="">Select Number of Roads</option>
+                    <option value="1">1 Road</option>
+                    <option value="2">2 Roads</option>
+                    <option value="3">3 Roads</option>
+                    <option value="4">4 Roads</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="building_type">Building Type</label>
+                <select name="building_type" id="building_type" required>
+                    <option value="">Select Building Type</option>
+                    <option value="Residential">Residential</option>
+                    <option value="Industrial">Industrial</option>
+                    <option value="Commercial">Commercial</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Enhanced FSI and BUA Calculation Section -->
+        <div id="calculationSection" class="calculation-section" style="display: none;">
+            <h3>Building Analysis & Calculations</h3>
+            <div class="calculation-grid">
+                <div class="calculation-item">
+                    <label>Zone Type</label>
+                    <div class="calculation-value" id="zoneTypeValue">-</div>
+                </div>
+                <div class="calculation-item">
+                    <label>Basic FSI</label>
+                    <div class="calculation-value" id="basicFsiValue">-</div>
+                </div>
+                <div class="calculation-item">
+                    <label>Max Permissible FSI</label>
+                    <div class="calculation-value" id="maxFsiValue">-</div>
+                </div>
+                <div class="calculation-item">
+                    <label>Basic Built-up Area</label>
+                    <div class="calculation-value" id="basicBuaValue">-</div>
+                </div>
+                <div class="calculation-item">
+                    <label>Max Built-up Area</label>
+                    <div class="calculation-value" id="maxBuaValue">-</div>
+                </div>
+                <div class="calculation-item">
+                    <label>Number of Floors</label>
+                    <div class="calculation-value" id="floorsValue">-</div>
+                </div>
+                <div class="calculation-item">
+                    <label>Area per Floor</label>
+                    <div class="calculation-value" id="areaPerFloorValue">-</div>
+                </div>
+                <div class="calculation-item">
+                    <label>Remaining Area per Floor</label>
+                    <div class="calculation-value" id="remainingAreaValue">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-grid">
+            <p class="full-width" style="margin: 0;">
+                Apartment counts describe one typical floor; this floor plan is repeated for the entered
+                number of floors. Every flat type, the shared corridor, lift, and staircase count toward
+                the FSI and coverage fit check. You will receive three checked layout concepts with
+                different room proportions and mirrored arrangements, including a labeled entry foyer
+                beside the living room.
+            </p>
+            <div class="form-field">
+                <label for="bhk_1">1 BHK per typical floor</label>
+                <small>Size: 430 sq ft per unit</small>
+                <select name="bhk_1" id="bhk_1">
+                    <option value="0">Select number of 1 BHK units</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="bhk_2">2 BHK per typical floor</label>
+                <small>Size: 730 sq ft per unit</small>
+                <select name="bhk_2" id="bhk_2">
+                    <option value="0">Select number of 2 BHK units</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="bhk_3">3 BHK per typical floor</label>
+                <small>Size: 1100 sq ft per unit</small>
+                <select name="bhk_3" id="bhk_3">
+                    <option value="0">Select number of 3 BHK units</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="bhk_4">4 BHK per typical floor</label>
+                <small>Size: 1600 sq ft per unit</small>
+                <select name="bhk_4" id="bhk_4">
+                    <option value="0">Select number of 4 BHK units</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <div id="roadWidthContainer" class="form-field full-width">
+            <div id="singleRoadWidthContainer">
+                <label for="road_width">Road Width</label>
+                <select name="road_width" id="singleRoadWidth" required>
+                    <option value="">Select Road Width</option>
+                    <option value="4">4 m</option>
+                    <option value="6">6 m</option>
+                    <option value="9">9 m</option>
+                    <option value="12.20">12.20 m</option>
+                    <option value="13.20">13.20 m</option>
+                    <option value="18.30">18.30 m</option>
+                    <option value="27.30">27.30 m</option>
+                    <option value="37.30">37.30 m</option>
+                </select>
+            </div>
+            
+            <div id="multiRoadWidths" style="display: none;">
+                <h4 style="margin: 16px 0 12px 0; color: #2d3436;">Road Widths</h4>
+                <div class="road-width-grid">
+                    <div class="road-width-item">
+                        <label for="roadWidth1">Road 1 Width</label>
+                        <select name="road_width_1" id="roadWidth1">
+                            <option value="">Select Road 1 Width</option>
+                            <option value="4">4 m</option>
+                            <option value="6">6 m</option>
+                            <option value="9">9 m</option>
+                            <option value="12.20">12.20 m</option>
+                            <option value="13.20">13.20 m</option>
+                            <option value="18.30">18.30 m</option>
+                            <option value="27.30">27.30 m</option>
+                            <option value="37.30">37.30 m</option>
+                        </select>
+                    </div>
+                    
+                    <div class="road-width-item">
+                        <label for="roadWidth2">Road 2 Width</label>
+                        <select name="road_width_2" id="roadWidth2">
+                            <option value="">Select Road 2 Width</option>
+                            <option value="4">4 m</option>
+                            <option value="6">6 m</option>
+                            <option value="9">9 m</option>
+                            <option value="12.20">12.20 m</option>
+                            <option value="13.20">13.20 m</option>
+                            <option value="18.30">18.30 m</option>
+                            <option value="27.30">27.30 m</option>
+                            <option value="37.30">37.30 m</option>
+                        </select>
+                    </div>
+                    
+                    <div class="road-width-item" id="road3WidthContainer" style="display: none;">
+                        <label for="roadWidth3">Road 3 Width</label>
+                        <select name="road_width_3" id="roadWidth3">
+                            <option value="">Select Road 3 Width</option>
+                            <option value="4">4 m</option>
+                            <option value="6">6 m</option>
+                            <option value="9">9 m</option>
+                            <option value="12.20">12.20 m</option>
+                            <option value="13.20">13.20 m</option>
+                            <option value="18.30">18.30 m</option>
+                            <option value="27.30">27.30 m</option>
+                            <option value="37.30">37.30 m</option>
+                        </select>
+                    </div>
+                    
+                    <div class="road-width-item" id="road4WidthContainer" style="display: none;">
+                        <label for="roadWidth4">Road 4 Width</label>
+                        <select name="road_width_4" id="roadWidth4">
+                            <option value="">Select Road 4 Width</option>
+                            <option value="4">4 m</option>
+                            <option value="6">6 m</option>
+                            <option value="9">9 m</option>
+                            <option value="12.20">12.20 m</option>
+                            <option value="13.20">13.20 m</option>
+                            <option value="18.30">18.30 m</option>
+                            <option value="27.30">27.30 m</option>
+                            <option value="37.30">37.30 m</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+            <div class="form-field">
+                <label for="aai_height">Height assigned by AAI (meters)</label>
+                <input type="number" name="aai_height" id="aai_height" step="0.01" placeholder="Enter AAI height in meters" required>
+                <small>Used to estimate total floors from the height per floor.</small>
+            </div>
+            
+            <div class="form-field">
+                <label for="per_floor_height">Height per Floor (meters)</label>
+                <input type="number" name="per_floor_height" id="per_floor_height" step="0.1" value="3.0" placeholder="Enter height per floor" required>
+                <small>Standard floor height is 3.0 meters</small>
+            </div>
+        
+        <div class="form-field full-width">
+            <label for="image">Upload Plot Image</label>
+            <input type="file" name="image" id="image" accept="image/*" required>
+        </div>
+        
+        <button type="submit" class="btn">Submit Form</button>
+    </form>
+    {% else %}
+    <div class="error-msg">You must be logged in to submit the form.</div>
+    {% endif %}
+    <div id="output"></div>
+    <div id="popup"></div>
+    </div>
+    <div class="loading" id="loadingScreen">
+        <div class="spinner"></div>
+        <span class="loading-text">Processing...</span>
+    </div>
+    <script>
+        const form = document.getElementById('buildingForm');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const outputDiv = document.getElementById('output');
+        const numberOfRoadsSelect = document.querySelector('select[name="number_of_roads"]');
+        const singleRoadWidth = document.getElementById('singleRoadWidth');
+        const multiRoadWidths = document.getElementById('multiRoadWidths');
+        const road3Container = document.getElementById('road3WidthContainer');
+        const road4Container = document.getElementById('road4WidthContainer');
+
+        const roadWidthContainer = document.getElementById('roadWidthContainer');
+        const plotSizeInput = document.getElementById('plot_size');
+
+        // Add event listeners for calculation updates
+        plotSizeInput.addEventListener('input', updateCalculationDisplay);
+        singleRoadWidth.addEventListener('change', updateCalculationDisplay);
+        
+        // Add event listeners for multi-road width selectors
+        document.getElementById('roadWidth1').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('roadWidth2').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('roadWidth3').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('roadWidth4').addEventListener('change', updateCalculationDisplay);
+        
+        // Add event listeners for AAI, per-floor height, and area unit changes
+        document.getElementById('aai_height').addEventListener('input', updateCalculationDisplay);
+        document.getElementById('per_floor_height').addEventListener('input', updateCalculationDisplay);
+        document.getElementById('area_unit').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('building_type').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('location').addEventListener('change', function() {
+            handleLocationChange();
+        });
+        
+        // Add event listener for custom location input
+        document.getElementById('custom_location').addEventListener('input', function() {
+            validateCustomLocation();
+        });
+        document.getElementById('jurisdiction').addEventListener('change', updateCalculationDisplay);
+        
+        // Add event listeners for BHK selections
+        document.getElementById('bhk_1').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('bhk_2').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('bhk_3').addEventListener('change', updateCalculationDisplay);
+        document.getElementById('bhk_4').addEventListener('change', updateCalculationDisplay);
+
+        // Handle road number selection change
+        numberOfRoadsSelect.addEventListener('change', function() {
+            const numRoads = parseInt(this.value);
+            
+            if (isNaN(numRoads) || numRoads < 1) {
+                // No roads selected - hide the entire road width container
+                roadWidthContainer.style.display = 'none';
+                roadWidthContainer.classList.remove('show');
+                singleRoadWidth.required = false;
+                clearMultiRoadRequirements();
+            } else {
+                // Show the road width container
+                roadWidthContainer.style.display = 'block';
+                roadWidthContainer.classList.add('show');
+                
+                if (numRoads === 1) {
+                    // Show single road width selector
+                    singleRoadWidth.style.display = 'block';
+                    singleRoadWidth.required = true;
+                    multiRoadWidths.style.display = 'none';
+                    clearMultiRoadRequirements();
+                } else if (numRoads >= 2) {
+                    // Show multiple road width selectors
+                    singleRoadWidth.style.display = 'none';
+                    singleRoadWidth.required = false;
+                    multiRoadWidths.style.display = 'block';
+                    
+                    // Set road 1 and 2 as required
+                    document.getElementById('roadWidth1').required = true;
+                    document.getElementById('roadWidth2').required = true;
+                    
+                    // Show/hide road 3 container
+                    if (numRoads >= 3) {
+                        road3Container.style.display = 'block';
+                        document.getElementById('roadWidth3').required = true;
+                    } else {
+                        road3Container.style.display = 'none';
+                        document.getElementById('roadWidth3').required = false;
+                    }
+                    
+                    // Show/hide road 4 container
+                    if (numRoads >= 4) {
+                        road4Container.style.display = 'block';
+                        document.getElementById('roadWidth4').required = true;
+                    } else {
+                        road4Container.style.display = 'none';
+                        document.getElementById('roadWidth4').required = false;
+                    }
+                }
+            }
+            
+            // Update calculations after road configuration changes
+            updateCalculationDisplay();
+        });
+
+        function clearMultiRoadRequirements() {
+            document.getElementById('roadWidth1').required = false;
+            document.getElementById('roadWidth2').required = false;
+            document.getElementById('roadWidth3').required = false;
+            document.getElementById('roadWidth4').required = false;
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            loadingScreen.classList.add('active');
+            
+            // Include enhanced FSI, BUA, and floors calculations in form data
+            const calculations = calculateEnhancedBUA();
+            const formData = new FormData(form);
+            
+            // Append calculated values
+            Object.keys(calculations).forEach(key => {
+                formData.append(key, calculations[key]);
+            });
+            
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingScreen.classList.remove('active');
+                if (data.success) {
+                    window.location.assign(data.data.output_page_url);
+                } else {
+                    showPopup('Error: ' + (data.error || 'Unknown error'));
+                    outputDiv.replaceChildren();
+                    const errorHeading = document.createElement('h3');
+                    errorHeading.textContent = 'Could not generate this floor plan';
+                    const errorMessage = document.createElement('p');
+                    errorMessage.textContent = data.error || 'Unknown error';
+                    outputDiv.append(errorHeading, errorMessage);
+                }
+            })
+            .catch(err => {
+                loadingScreen.classList.remove('active');
+                const message = err instanceof Error ? err.message : 'Unknown request error';
+                showPopup('Error processing request: ' + message);
+                outputDiv.replaceChildren();
+            });
+        });
+
+        function showPopup(msg) {
+            const popup = document.getElementById('popup');
+            popup.textContent = msg;
+            popup.style.display = 'block';
+            setTimeout(() => { popup.style.display = 'none'; }, 2500);
+        }
+        function getBasicFSI(roadWidth, zoneType = 'suburbs') {
+            // Enhanced FSI calculation with zone considerations
+            const fsiTable = {
+                'island_city': {
+                    4: 1.33, 6: 1.33, 9: 1.33, 12.2: 1.33, 18.3: 1.33, 27.3: 1.33, 30: 1.33
+                },
+                'extended_suburbs': {
+                    4: 1.0, 6: 1.0, 9: 1.0, 12.2: 1.0, 18.3: 1.0, 27.3: 1.0, 30: 1.0
+                },
+                'suburbs': {
+                    4: 1.0, 6: 1.0, 9: 1.0, 12.2: 1.0, 18.3: 1.0, 27.3: 1.0, 30: 1.0
+                },
+                'thane_region': {
+                    4: 1.0, 6: 1.0, 9: 1.2, 12.2: 1.5, 18.3: 1.8, 27.3: 2.0, 30: 2.0
+                }
+            };
+            
+            const table = fsiTable[zoneType] || fsiTable['suburbs'];
+            const widths = Object.keys(table).map(Number).sort((a, b) => a - b);
+            
+            // Find closest road width
+            let closestWidth = widths[0];
+            for (let width of widths) {
+                if (roadWidth >= width) {
+                    closestWidth = width;
+                }
+            }
+            
+            return table[closestWidth];
+        }
+        
+        function getMaxFSI(roadWidth, basicFSI, zoneType = 'suburbs') {
+            // Max FSI based on road width and zone
+            const additionalFSI = {
+                4: 0.0, 6: 0.5, 9: 1.0, 12.2: 1.5, 18.3: 2.0, 27.3: 2.5, 30: 3.0
+            };
+            
+            let additional = 0;
+            for (let width of Object.keys(additionalFSI).map(Number).sort((a, b) => b - a)) {
+                if (roadWidth >= width) {
+                    additional = additionalFSI[width];
+                    break;
+                }
+            }
+            
+            if (zoneType === 'island_city') {
+                additional = Math.min(additional + 0.67, 2.67); // Island City gets extra FSI
+            }
+            
+            return basicFSI + additional;
+        }
+        
+        function determineZoneType(location, jurisdiction) {
+            const loc = location.toLowerCase();
+            const jur = jurisdiction.toLowerCase();
+            
+            // Comprehensive Mumbai area mapping
+            const islandCityAreas = [
+                'fort', 'churchgate', 'marine lines', 'colaba', 'nariman point', 'ballard estate',
+                'marine drive', 'cuffe parade', 'lower parel', 'worli', 'prabhadevi', 'mahalaxmi',
+                'grant road', 'mumbai central', 'byculla', 'mazgaon', 'sewri', 'cotton green'
+            ];
+            
+            const extendedSuburbsAreas = [
+                'andheri', 'jogeshwari', 'goregaon', 'malad', 'kandivali', 'borivali', 
+                'dahisar', 'virar', 'vasai', 'nalasopara', 'mira road', 'bhayander',
+                'palghar', 'naigaon', 'nallasopara'
+            ];
+            
+            const suburbsAreas = [
+                'bandra', 'khar', 'santacruz', 'vile parle', 'juhu', 'versova',
+                'powai', 'chembur', 'ghatkopar', 'vikhroli', 'mulund', 'bhandup',
+                'kanjurmarg', 'kurla', 'sion', 'matunga', 'dadar', 'mahim',
+                'wadala', 'king circle', 'tilak nagar'
+            ];
+            
+            const thaneRegionAreas = [
+                'thane', 'kalyan', 'dombivli', 'airoli', 'ghansoli', 'vashi', 'nerul',
+                'panvel', 'kharghar', 'belapur', 'kopar khairane'
+            ];
+            
+            // Check Island City first (highest FSI)
+            if (islandCityAreas.some(area => loc.includes(area.toLowerCase()))) {
+                return 'island_city';
+            }
+            
+            // Check Extended Suburbs
+            if (extendedSuburbsAreas.some(area => loc.includes(area.toLowerCase()))) {
+                return 'extended_suburbs';
+            }
+            
+            // Check Thane Region (often under different jurisdiction)
+            if (thaneRegionAreas.some(area => loc.includes(area.toLowerCase()))) {
+                // Thane region usually has different FSI rules
+                if (jur.includes('tmc') || jur.includes('thane') || jur.includes('cidco')) {
+                    return 'thane_region';
+                }
+                return 'suburbs';
+            }
+            
+            // Check regular suburbs
+            if (suburbsAreas.some(area => loc.includes(area.toLowerCase()))) {
+                return 'suburbs';
+            }
+            
+            // Default based on jurisdiction
+            if (jur.includes('mcgm') || jur.includes('mumbai')) {
+                return 'suburbs'; // Default for MCGM areas
+            }
+            
+            return 'suburbs'; // Default fallback
+        }
+
+        function calculateEnhancedBUA() {
+            const plotSize = parseFloat(document.getElementById("plot_size").value) || 0;
+            const areaUnit = document.getElementById('area_unit').value;
+            const numRoads = parseInt(document.getElementById("number_of_roads").value) || 0;
+            const aaiHeight = parseFloat(document.getElementById('aai_height').value) || 0;
+            const perFloorHeight = parseFloat(document.getElementById('per_floor_height').value) || 3.0;
+            const location = document.getElementById('location').value || '';
+            const jurisdiction = document.getElementById('jurisdiction').value || '';
+            const buildingType = document.getElementById('building_type').value || 'Residential';
+
+            let roadWidths = [];
+            if (numRoads === 1) {
+                const singleWidth = parseFloat(document.getElementById("singleRoadWidth").value);
+                if (!isNaN(singleWidth)) roadWidths.push(singleWidth);
+            } else {
+                for (let i = 1; i <= numRoads; i++) {
+                    let val = parseFloat(document.getElementById("roadWidth" + i).value);
+                    if (!isNaN(val)) roadWidths.push(val);
+                }
+            }
+
+            if (roadWidths.length === 0 || plotSize <= 0) {
+                return {
+                    fsi: 0, max_fsi: 0, bua: 0, max_bua: 0, floors: 0, 
+                    fsi_per_floor: 0, area_left: 0, zone_type: 'unknown', fsi_source: 'incomplete'
+                };
+            }
+
+            // Calculate plot size in sqmt
+            let plotSizeSqmt = plotSize;
+            if (areaUnit === 'sqft') {
+                plotSizeSqmt = plotSize / 10.764;
+            }
+            
+            // Determine zone and FSI
+            const zoneType = determineZoneType(location, jurisdiction);
+            const maxRoadWidth = Math.max(...roadWidths);
+            const basicFSI = getBasicFSI(maxRoadWidth, zoneType);
+            const maxFSI = getMaxFSI(maxRoadWidth, basicFSI, zoneType);
+            
+            // Calculate BUA
+            let basicBUA = plotSizeSqmt * basicFSI;
+            let maxBUA = plotSizeSqmt * maxFSI;
+            
+            // Convert back to original unit if needed
+            if (areaUnit === 'sqft') {
+                basicBUA *= 10.764;
+                maxBUA *= 10.764;
+            }
+            
+            // Calculate floors
+            const floors = perFloorHeight > 0 ? Math.floor(aaiHeight / perFloorHeight) : 0;
+            
+            // Calculate area per floor (always convert BUA to sqft first, then divide by floors)
+            let areaPerFloorSqft = 0;
+            if (floors > 0) {
+                // Always convert BUA to sq ft first, regardless of input unit
+                const buaInSqft = areaUnit === 'sqft' ? maxBUA : (maxBUA * 10.764);
+                areaPerFloorSqft = buaInSqft / floors;
+            }
+            
+            // Calculate BHK areas and remaining area
+            const bhk1Count = parseInt(document.getElementById('bhk_1').value) || 0;
+            const bhk2Count = parseInt(document.getElementById('bhk_2').value) || 0;
+            const bhk3Count = parseInt(document.getElementById('bhk_3').value) || 0;
+            const bhk4Count = parseInt(document.getElementById('bhk_4').value) || 0;
+            
+            const totalBhkArea = (bhk1Count * 430) + (bhk2Count * 730) + (bhk3Count * 1100) + (bhk4Count * 1600);
+            const remainingArea = areaPerFloorSqft - totalBhkArea;
+
+            return {
+                fsi: basicFSI,
+                max_fsi: maxFSI,
+                bua: basicBUA,
+                max_bua: maxBUA,
+                floors: floors,
+                per_floor_height: perFloorHeight,
+                fsi_per_floor: areaPerFloorSqft,
+                area_left: remainingArea,
+                zone_type: zoneType,
+                fsi_source: 'frontend_calculation',
+                max_road_width: maxRoadWidth
+            };
+        }
+
+        function updateCalculationDisplay() {
+            const calculations = calculateEnhancedBUA();
+            const areaUnit = document.getElementById('area_unit').value;
+            
+            const calculationSection = document.getElementById('calculationSection');
+            
+            // Update unit labels
+            updateUnitLabels();
+            
+            if (calculations.fsi > 0) {
+                calculationSection.style.display = 'block';
+                
+                // Update all calculation displays
+                document.getElementById('zoneTypeValue').textContent = calculations.zone_type.replace('_', ' ').toUpperCase();
+                document.getElementById('basicFsiValue').textContent = calculations.fsi.toFixed(2);
+                document.getElementById('maxFsiValue').textContent = calculations.max_fsi.toFixed(2);
+                
+                const unitText = areaUnit === 'sqft' ? 'sq ft' : 'sq mt';
+                document.getElementById('basicBuaValue').textContent = calculations.bua.toFixed(2) + ' ' + unitText;
+                document.getElementById('maxBuaValue').textContent = calculations.max_bua.toFixed(2) + ' ' + unitText;
+                
+                document.getElementById('floorsValue').textContent = calculations.floors;
+                document.getElementById('areaPerFloorValue').textContent = calculations.fsi_per_floor.toFixed(2) + ' sq ft';
+                
+                const remainingColor = calculations.area_left >= 0 ? '#27ae60' : '#e74c3c';
+                const remainingElement = document.getElementById('remainingAreaValue');
+                remainingElement.textContent = calculations.area_left.toFixed(2) + ' sq ft';
+                remainingElement.style.color = remainingColor;
+                
+            } else {
+                calculationSection.style.display = 'none';
+            }
+        }
+
+        function updateUnitLabels() {
+            const areaUnit = document.getElementById('area_unit').value;
+            const unitText = areaUnit === 'sqft' ? 'sq ft' : 'sq mt';
+            
+            // Update plot size unit label
+            const plotSizeLabel = document.querySelector('small[id="plot_size_unit"]');
+            if (plotSizeLabel) {
+                plotSizeLabel.textContent = `Plot area in ${unitText}`;
+            }
+            
+            // Update AAI unit label
+            const aaiLabel = document.getElementById('aai_unit');
+            if (aaiLabel) {
+                aaiLabel.textContent = `Average area per floor in ${unitText}`;
+            }
+        }
+
+        function handleLocationChange() {
+            const locationValue = document.getElementById('location').value;
+            
+            if (locationValue === 'Other') {
+                showCustomLocationField();
+            } else {
+                hideCustomLocationField();
+                if (locationValue) {
+                    updateJurisdictionBasedOnLocation(locationValue);
+                    updateDocumentTypeBasedOnLocation(locationValue);
+                    updateCalculationDisplay();
+                }
+            }
+        }
+        
+        function showCustomLocationField() {
+            document.getElementById('customLocationField').style.display = 'block';
+            document.getElementById('custom_location').required = true;
+            // Clear validation message
+            document.getElementById('locationValidationMsg').style.display = 'none';
+        }
+        
+        function hideCustomLocationField() {
+            document.getElementById('customLocationField').style.display = 'none';
+            document.getElementById('custom_location').required = false;
+            document.getElementById('custom_location').value = '';
+            document.getElementById('locationValidationMsg').style.display = 'none';
+        }
+        
+        function validateCustomLocation() {
+            const customLocation = document.getElementById('custom_location').value.trim();
+            const validationMsg = document.getElementById('locationValidationMsg');
+            
+            if (customLocation.length < 2) {
+                validationMsg.style.display = 'none';
+                return;
+            }
+            
+            // Check if location exists in our supported areas
+            if (!isLocationSupported(customLocation)) {
+                validationMsg.textContent = 'Location not supported yet, please choose a different location.';
+                validationMsg.style.display = 'block';
+            } else {
+                validationMsg.style.display = 'none';
+                // Auto-update jurisdiction and document type for recognized locations
+                updateJurisdictionBasedOnLocation(customLocation);
+                updateDocumentTypeBasedOnLocation(customLocation);
+                updateCalculationDisplay();
+            }
+        }
+        
+        function isLocationSupported(location) {
+            const loc = location.toLowerCase();
+            
+            // All supported locations from our comprehensive mapping
+            const supportedLocations = [
+                // MCGM Areas
+                'churchgate', 'marine drive', 'fort', 'colaba', 'nariman point', 'cuffe parade',
+                'ballard estate', 'kala ghoda', 'cst', 'crawford market', 'masjid', 'byculla',
+                'grant road', 'charni road', 'mumbai central', 'lower parel', 'prabhadevi',
+                'dadar', 'matunga', 'sion', 'kurla', 'vidyavihar', 'ghatkopar', 'vikhroli',
+                'kanjurmarg', 'bhandup', 'mulund', 'mahim', 'bandra', 'khar', 'santacruz',
+                'vile parle', 'andheri', 'jogeshwari', 'ram mandir', 'goregaon', 'malad',
+                'kandivali', 'borivali', 'dahisar', 'worli', 'tardeo', 'breach candy',
+                'kemps corner', 'malabar hill', 'walkeshwar', 'juhu', 'versova', 'chembur',
+                'wadala', 'king circle', 'tilak nagar',
+                
+                // MMRDA Areas
+                'powai', 'hiranandani', 'chandivali', 'sakinaka', 'marol', 'seepz',
+                'chakala', 'kurla east', 'bkc', 'bandra east', 'kalina',
+                
+                // CIDCO Areas
+                'vashi', 'nerul', 'belapur', 'kharghar', 'panvel', 'kamothe',
+                'new panvel', 'ulwe', 'airoli', 'ghansoli', 'kopar khairane',
+                'turbhe', 'sanpada', 'juinagar',
+                
+                // TMC Areas
+                'thane west', 'thane east', 'naupada', 'kopri', 'vartak nagar',
+                'wagle estate', 'majiwada', 'kapurbawdi', 'ghodbunder road', 'manpada',
+                
+                // Other Areas
+                'kalyan', 'dombivli', 'ulhasnagar', 'ambernath', 'badlapur',
+                'mira road', 'bhayandar', 'vasai', 'virar', 'nalasopara', 'naigaon'
+            ];
+            
+            return supportedLocations.some(area => 
+                loc.includes(area) || area.includes(loc) || 
+                area.replace(/\s+/g, '') === loc.replace(/\s+/g, '')
+            );
+        }
+        
+        function updateDocumentTypeBasedOnLocation(location) {
+            const documentSelect = document.getElementById('rrr');
+            const loc = location.toLowerCase();
+            
+            // Mumbai areas typically use DCPR
+            const dcprAreas = [
+                'mumbai', 'fort', 'churchgate', 'marine', 'colaba', 'nariman',
+                'ballard', 'lower parel', 'worli', 'bandra', 'andheri', 'goregaon',
+                'malad', 'borivali', 'dahisar', 'kurla', 'ghatkopar', 'mulund',
+                'thane', 'kalyan', 'dombivli', 'vashi', 'nerul', 'panvel'
+            ];
+            
+            // Areas outside Mumbai may use UDCPR
+            const udcprAreas = [
+                'pune', 'nashik', 'aurangabad', 'nagpur', 'solapur'
+            ];
+            
+            if (dcprAreas.some(area => loc.includes(area))) {
+                documentSelect.value = 'dcpr';
+            } else if (udcprAreas.some(area => loc.includes(area))) {
+                documentSelect.value = 'udcpr';
+            } else {
+                // Default to DCPR for Mumbai region
+                documentSelect.value = 'dcpr';
+            }
+            
+            // Trigger change event
+            documentSelect.dispatchEvent(new Event('change'));
+        }
+        
+        function updateJurisdictionBasedOnLocation(location) {
+            const jurisdictionSelect = document.getElementById('jurisdiction');
+            
+            // Location to jurisdiction mapping
+            const locationJurisdictionMap = {
+                // MCGM Areas
+                'Churchgate': 'MCGM', 'Marine Drive': 'MCGM', 'Fort': 'MCGM', 'Colaba': 'MCGM',
+                'Nariman Point': 'MCGM', 'Cuffe Parade': 'MCGM', 'Ballard Estate': 'MCGM',
+                'Kala Ghoda': 'MCGM', 'CST': 'MCGM', 'Crawford Market': 'MCGM', 'Masjid': 'MCGM',
+                'Byculla': 'MCGM', 'Grant Road': 'MCGM', 'Charni Road': 'MCGM', 'Mumbai Central': 'MCGM',
+                'Lower Parel': 'MCGM', 'Prabhadevi': 'MCGM', 'Dadar': 'MCGM', 'Matunga': 'MCGM',
+                'Sion': 'MCGM', 'Kurla': 'MCGM', 'Vidyavihar': 'MCGM', 'Ghatkopar': 'MCGM',
+                'Vikhroli': 'MCGM', 'Kanjurmarg': 'MCGM', 'Bhandup': 'MCGM', 'Mulund': 'MCGM',
+                'Mahim': 'MCGM', 'Bandra': 'MCGM', 'Khar': 'MCGM', 'Santacruz': 'MCGM',
+                'Vile Parle': 'MCGM', 'Andheri': 'MCGM', 'Jogeshwari': 'MCGM', 'Ram Mandir': 'MCGM',
+                'Goregaon': 'MCGM', 'Malad': 'MCGM', 'Kandivali': 'MCGM', 'Borivali': 'MCGM',
+                'Dahisar': 'MCGM', 'Worli': 'MCGM', 'Tardeo': 'MCGM', 'Breach Candy': 'MCGM',
+                'Kemps Corner': 'MCGM', 'Malabar Hill': 'MCGM', 'Walkeshwar': 'MCGM',
+                
+                // MMRDA Areas (Extended Suburbs)
+                'Powai': 'MMRDA', 'Hiranandani': 'MMRDA', 'Chandivali': 'MMRDA', 'Sakinaka': 'MMRDA',
+                'Marol': 'MMRDA', 'Seepz': 'MMRDA', 'Chakala': 'MMRDA', 'Kurla East': 'MMRDA',
+                'BKC': 'MMRDA', 'Bandra East': 'MMRDA', 'Kalina': 'MMRDA',
+                
+                // CIDCO Areas (Navi Mumbai)
+                'Vashi': 'CIDCO', 'Nerul': 'CIDCO', 'Belapur': 'CIDCO', 'Kharghar': 'CIDCO',
+                'Panvel': 'CIDCO', 'Kamothe': 'CIDCO', 'New Panvel': 'CIDCO', 'Ulwe': 'CIDCO',
+                'Airoli': 'CIDCO', 'Ghansoli': 'CIDCO', 'Kopar Khairane': 'CIDCO',
+                'Turbhe': 'CIDCO', 'Sanpada': 'CIDCO', 'Juinagar': 'CIDCO',
+                
+                // TMC Areas (Thane)
+                'Thane West': 'TMC', 'Thane East': 'TMC', 'Naupada': 'TMC', 'Kopri': 'TMC',
+                'Vartak Nagar': 'TMC', 'Wagle Estate': 'TMC', 'Majiwada': 'TMC',
+                'Kapurbawdi': 'TMC', 'Ghodbunder Road': 'TMC', 'Manpada': 'TMC',
+                
+                // Other Municipal Councils
+                'Kalyan': 'KDMC', 'Dombivli': 'KDMC', 'Ulhasnagar': 'UMC',
+                'Ambernath': 'AMC', 'Badlapur': 'BMC', 'Mira Road': 'MBMC',
+                'Bhayandar': 'MBMC', 'Vasai': 'VCMC', 'Virar': 'VCMC',
+                'Nalasopara': 'VCMC', 'Naigaon': 'VCMC'
+            };
+            
+            if (locationJurisdictionMap[location]) {
+                jurisdictionSelect.value = locationJurisdictionMap[location];
+                // Trigger change event to update calculations
+                jurisdictionSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        function handleLocationChange() {
+            const locationValue = document.getElementById('location').value;
+            
+            if (locationValue === 'Other') {
+                showCustomLocationField();
+            } else {
+                hideCustomLocationField();
+                if (locationValue) {
+                    updateJurisdictionBasedOnLocation();
+                    updateDocumentTypeBasedOnLocation(locationValue);
+                    updateCalculationDisplay();
+                }
+            }
+        }
+        
+        function showCustomLocationField() {
+            document.getElementById('customLocationField').style.display = 'block';
+            document.getElementById('custom_location').required = true;
+            // Clear validation message
+            document.getElementById('locationValidationMsg').style.display = 'none';
+        }
+        
+        function hideCustomLocationField() {
+            document.getElementById('customLocationField').style.display = 'none';
+            document.getElementById('custom_location').required = false;
+            document.getElementById('custom_location').value = '';
+            document.getElementById('locationValidationMsg').style.display = 'none';
+        }
+        
+        function validateCustomLocation() {
+            const customLocation = document.getElementById('custom_location').value.trim();
+            const validationMsg = document.getElementById('locationValidationMsg');
+            
+            if (customLocation.length < 2) {
+                validationMsg.style.display = 'none';
+                return;
+            }
+            
+            // Check if location exists in our supported areas
+            if (!isLocationSupported(customLocation)) {
+                validationMsg.textContent = 'Location not supported yet, please choose a different location.';
+                validationMsg.style.display = 'block';
+            } else {
+                validationMsg.style.display = 'none';
+                // Auto-update jurisdiction and document type for recognized locations
+                updateJurisdictionBasedOnLocationCustom(customLocation);
+                updateDocumentTypeBasedOnLocation(customLocation);
+                updateCalculationDisplay();
+            }
+        }
+        
+        function isLocationSupported(location) {
+            const loc = location.toLowerCase();
+            
+            // All supported locations from our comprehensive mapping
+            const supportedLocations = [
+                // MCGM Areas
+                'churchgate', 'marine drive', 'fort', 'colaba', 'nariman point', 'cuffe parade',
+                'ballard estate', 'kala ghoda', 'cst', 'crawford market', 'masjid', 'byculla',
+                'grant road', 'charni road', 'mumbai central', 'lower parel', 'prabhadevi',
+                'dadar', 'matunga', 'sion', 'kurla', 'vidyavihar', 'ghatkopar', 'vikhroli',
+                'kanjurmarg', 'bhandup', 'mulund', 'mahim', 'bandra', 'khar', 'santacruz',
+                'vile parle', 'andheri', 'jogeshwari', 'ram mandir', 'goregaon', 'malad',
+                'kandivali', 'borivali', 'dahisar', 'worli', 'tardeo', 'breach candy',
+                'kemps corner', 'malabar hill', 'walkeshwar', 'juhu', 'versova', 'chembur',
+                'wadala', 'king circle', 'tilak nagar', 'mazgaon', 'sewri', 'cotton green',
+                
+                // MMRDA Areas
+                'powai', 'hiranandani', 'chandivali', 'sakinaka', 'marol', 'seepz',
+                'chakala', 'kurla east', 'bkc', 'bandra east', 'kalina',
+                
+                // CIDCO Areas
+                'vashi', 'nerul', 'belapur', 'kharghar', 'panvel', 'kamothe',
+                'new panvel', 'ulwe', 'airoli', 'ghansoli', 'kopar khairane',
+                'turbhe', 'sanpada', 'juinagar',
+                
+                // TMC Areas
+                'thane west', 'thane east', 'naupada', 'kopri', 'vartak nagar',
+                'wagle estate', 'majiwada', 'kapurbawdi', 'ghodbunder road', 'manpada',
+                
+                // Other Areas
+                'kalyan', 'dombivli', 'ulhasnagar', 'ambernath', 'badlapur',
+                'mira road', 'bhayandar', 'vasai', 'virar', 'nalasopara', 'naigaon',
+                'palghar', 'nallasopara', 'bhiwandi'
+            ];
+            
+            return supportedLocations.some(area => 
+                loc.includes(area) || area.includes(loc) || 
+                area.replace(/\s+/g, '').toLowerCase() === loc.replace(/\s+/g, '').toLowerCase()
+            );
+        }
+        
+        function updateDocumentTypeBasedOnLocation(location) {
+            const documentSelect = document.getElementById('rrr');
+            const loc = location.toLowerCase();
+            
+            // Mumbai areas typically use DCPR
+            const dcprAreas = [
+                'mumbai', 'fort', 'churchgate', 'marine', 'colaba', 'nariman',
+                'ballard', 'lower parel', 'worli', 'bandra', 'andheri', 'goregaon',
+                'malad', 'borivali', 'dahisar', 'kurla', 'ghatkopar', 'mulund',
+                'thane', 'kalyan', 'dombivli', 'vashi', 'nerul', 'panvel', 'powai',
+                'juhu', 'versova', 'chembur', 'sion', 'matunga', 'dadar'
+            ];
+            
+            // Areas outside Mumbai may use UDCPR
+            const udcprAreas = [
+                'pune', 'nashik', 'aurangabad', 'nagpur', 'solapur'
+            ];
+            
+            if (dcprAreas.some(area => loc.includes(area))) {
+                documentSelect.value = 'dcpr';
+            } else if (udcprAreas.some(area => loc.includes(area))) {
+                documentSelect.value = 'udcpr';
+            } else {
+                // Default to DCPR for Mumbai region
+                documentSelect.value = 'dcpr';
+            }
+            
+            // Trigger change event
+            documentSelect.dispatchEvent(new Event('change'));
+        }
+        
+        function updateJurisdictionBasedOnLocationCustom(location) {
+            const jurisdictionSelect = document.getElementById('jurisdiction');
+            
+            // Location to jurisdiction mapping (same as before but for custom input)
+            const locationJurisdictionMap = {
+                // MCGM Areas
+                'Churchgate': 'MCGM', 'Marine Drive': 'MCGM', 'Fort': 'MCGM', 'Colaba': 'MCGM',
+                'Nariman Point': 'MCGM', 'Cuffe Parade': 'MCGM', 'Ballard Estate': 'MCGM',
+                'Kala Ghoda': 'MCGM', 'CST': 'MCGM', 'Crawford Market': 'MCGM', 'Masjid': 'MCGM',
+                'Byculla': 'MCGM', 'Grant Road': 'MCGM', 'Charni Road': 'MCGM', 'Mumbai Central': 'MCGM',
+                'Lower Parel': 'MCGM', 'Prabhadevi': 'MCGM', 'Dadar': 'MCGM', 'Matunga': 'MCGM',
+                'Sion': 'MCGM', 'Kurla': 'MCGM', 'Vidyavihar': 'MCGM', 'Ghatkopar': 'MCGM',
+                'Vikhroli': 'MCGM', 'Kanjurmarg': 'MCGM', 'Bhandup': 'MCGM', 'Mulund': 'MCGM',
+                'Mahim': 'MCGM', 'Bandra': 'MCGM', 'Khar': 'MCGM', 'Santacruz': 'MCGM',
+                'Vile Parle': 'MCGM', 'Andheri': 'MCGM', 'Jogeshwari': 'MCGM', 'Ram Mandir': 'MCGM',
+                'Goregaon': 'MCGM', 'Malad': 'MCGM', 'Kandivali': 'MCGM', 'Borivali': 'MCGM',
+                'Dahisar': 'MCGM', 'Worli': 'MCGM', 'Tardeo': 'MCGM', 'Breach Candy': 'MCGM',
+                'Kemps Corner': 'MCGM', 'Malabar Hill': 'MCGM', 'Walkeshwar': 'MCGM',
+                
+                // MMRDA Areas (Extended Suburbs)
+                'Powai': 'MMRDA', 'Hiranandani': 'MMRDA', 'Chandivali': 'MMRDA', 'Sakinaka': 'MMRDA',
+                'Marol': 'MMRDA', 'Seepz': 'MMRDA', 'Chakala': 'MMRDA', 'Kurla East': 'MMRDA',
+                'BKC': 'MMRDA', 'Bandra East': 'MMRDA', 'Kalina': 'MMRDA',
+                
+                // CIDCO Areas (Navi Mumbai)
+                'Vashi': 'CIDCO', 'Nerul': 'CIDCO', 'Belapur': 'CIDCO', 'Kharghar': 'CIDCO',
+                'Panvel': 'CIDCO', 'Kamothe': 'CIDCO', 'New Panvel': 'CIDCO', 'Ulwe': 'CIDCO',
+                'Airoli': 'CIDCO', 'Ghansoli': 'CIDCO', 'Kopar Khairane': 'CIDCO',
+                'Turbhe': 'CIDCO', 'Sanpada': 'CIDCO', 'Juinagar': 'CIDCO',
+                
+                // TMC Areas (Thane)
+                'Thane West': 'TMC', 'Thane East': 'TMC', 'Naupada': 'TMC', 'Kopri': 'TMC',
+                'Vartak Nagar': 'TMC', 'Wagle Estate': 'TMC', 'Majiwada': 'TMC',
+                'Kapurbawdi': 'TMC', 'Ghodbunder Road': 'TMC', 'Manpada': 'TMC',
+                
+                // Other Municipal Councils
+                'Kalyan': 'KDMC', 'Dombivli': 'KDMC', 'Ulhasnagar': 'UMC',
+                'Ambernath': 'AMC', 'Badlapur': 'BMC', 'Mira Road': 'MBMC',
+                'Bhayandar': 'MBMC', 'Vasai': 'VCMC', 'Virar': 'VCMC',
+                'Nalasopara': 'VCMC', 'Naigaon': 'VCMC'
+            };
+            
+            // Check for exact matches or partial matches
+            const matchedJurisdiction = Object.keys(locationJurisdictionMap).find(key => 
+                key.toLowerCase().includes(location.toLowerCase()) || 
+                location.toLowerCase().includes(key.toLowerCase())
+            );
+            
+            if (matchedJurisdiction) {
+                jurisdictionSelect.value = locationJurisdictionMap[matchedJurisdiction];
+                // Trigger change event to update calculations
+                jurisdictionSelect.dispatchEvent(new Event('change'));
+            } else {
+                // Default to MCGM for Mumbai area
+                jurisdictionSelect.value = 'MCGM';
+                jurisdictionSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Initialize unit labels on page load
+        updateUnitLabels();
+
+    </script>
+</body>
+
+</html>
